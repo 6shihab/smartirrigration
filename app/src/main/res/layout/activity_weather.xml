@@ -203,55 +203,23 @@
                     android:text="7-Day Weather Report"
                     android:layout_marginLeft="15dp"
                     android:textSize="20sp"/>
-                <TextView
-                    android:id="@+id/day0TextviewID"
+
+                <TableLayout
+                    android:id="@+id/weatherdataTable"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="Day-0 Weather Report"
-                    android:layout_marginLeft="15dp"
-                    android:textSize="19sp"/>
-                <TextView
-                    android:id="@+id/day1TextviewID"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="Day-1 Weather Report"
-                    android:layout_marginLeft="15dp"
-                    android:textSize="19sp"/>
-                <TextView
-                    android:id="@+id/day2TextviewID"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="Day-2 Weather Report"
-                    android:layout_marginLeft="15dp"
-                    android:textSize="19sp"/>
-                <TextView
-                    android:id="@+id/day3TextviewID"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="Day-3 Weather Report"
-                    android:layout_marginLeft="15dp"
-                    android:textSize="19sp"/>
-                <TextView
-                    android:id="@+id/day4TextviewID"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="Day-4 Weather Report"
-                    android:layout_marginLeft="15dp"
-                    android:textSize="19sp"/>
-                <TextView
-                    android:id="@+id/day5TextviewID"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="Day-5 Weather Report"
-                    android:layout_marginLeft="15dp"
-                    android:textSize="19sp"/>
-                <TextView
-                    android:id="@+id/day6TextviewID"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="Day-6 Weather Report"
-                    android:layout_marginLeft="15dp"
-                    android:textSize="19sp"/>
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:paddingBottom="20dp"
+                    android:layout_marginLeft="10dp">
+
+                    <!-- Table Heading -->
+
+                    <TableRow android:background="#05FFFF">
+
+
+                    </TableRow>
+
+                </TableLayout>
 
             </LinearLayout>
 

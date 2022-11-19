@@ -2,7 +2,10 @@ package com.example.smartirrigation;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.MenuItem;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,13 +25,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class WeatherActivity extends AppCompatActivity {
     public static final String DEGREE_SIGN="\u2103";
     public StringBuilder maxMinStringBuilder;
     TextView tempTextview,maxMinTextview,precipitationTextview,precipitationTypeTextview,currentConditionTextView,weatherDescriptionTextView;
-
     String moisture="0";
     String ph="0";
     String temperature="0";
@@ -43,6 +47,8 @@ public class WeatherActivity extends AppCompatActivity {
         precipitationTypeTextview=findViewById(R.id.precipitationTypeTextviewID);
         currentConditionTextView=findViewById(R.id.currentConditionTextViewID);
         weatherDescriptionTextView=findViewById(R.id.weatherDescriptionTextViewID);
+
+
 
         Bundle bundle = getIntent().getExtras();
         if(bundle != null){
@@ -129,6 +135,34 @@ public class WeatherActivity extends AppCompatActivity {
                     }
                     currentConditionTextView.setText(jsonDays.getJSONObject(0).getString("conditions"));
                     weatherDescriptionTextView.setText(response.getString("description"));
+                    SimpleDateFormat sdf = new SimpleDateFormat("MMM dd   EEE");
+
+                    String[] all_data=new String[7];
+                    for (int i=0;i<7;i++){
+                        Calendar calendar = new GregorianCalendar();
+                        calendar.add(Calendar.DATE, i);
+                        all_data[i]=sdf.format(calendar.getTime())+"-"+jsonDays.getJSONObject(i)
+                                .getString("conditions")+"-"+jsonDays.getJSONObject(i)
+                                .getString("tempmax")+"\u2103"+"/"+jsonDays.getJSONObject(i)
+                                .getString("tempmin")+"\u2103";
+                    }
+                    TableLayout weathertableLayout = (TableLayout) findViewById(R.id.weatherdataTable);
+
+                    for (String row : all_data) {
+                        TableRow tableRow = new TableRow(WeatherActivity.this);
+                        String[] parameters = row.split("-", 3);
+                        for (int i=0; i<3; i++){
+                            TextView textView = new TextView(WeatherActivity.this);
+                            textView.setText(parameters[i]);
+                            textView.setTextSize(16);
+                            textView.setPadding(10,0,10, 0);
+                            textView.setGravity(Gravity.LEFT);
+                            tableRow.addView(textView);
+                        }
+                        weathertableLayout.addView(tableRow);
+                    }
+
+
 
                 } catch (JSONException e) {
                     Toast.makeText(getApplicationContext(),"Error Occur",Toast.LENGTH_LONG).show();
