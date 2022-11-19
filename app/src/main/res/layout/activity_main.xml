@@ -40,7 +40,7 @@
                 android:layout_height="0dp"
                 app:layout_constraintBottom_toBottomOf="@id/imageHeader"
                 app:layout_constraintTop_toTopOf="parent"
-                android:background="@color/colorSemiDark"></View>
+                android:background="#5C000000"></View>
 
         <TextView
             android:id="@+id/heading"

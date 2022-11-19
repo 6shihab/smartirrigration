@@ -214,7 +214,10 @@
 
                     <!-- Table Heading -->
 
-                    <TableRow android:background="#05FFFF">
+                    <TableRow
+                        android:background="#05FFFF"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp">
 
 
                     </TableRow>

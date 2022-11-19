@@ -291,8 +291,6 @@ public class MainActivity extends AppCompatActivity {
 
                 try {
                     LocationSettingsResponse response = task.getResult(ApiException.class);
-                    Toast.makeText(MainActivity.this, "GPS is already tured on", Toast.LENGTH_SHORT).show();
-
                 } catch (ApiException e) {
 
                     switch (e.getStatusCode()) {
