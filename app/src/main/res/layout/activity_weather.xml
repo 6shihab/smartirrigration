@@ -33,7 +33,7 @@
                 android:contentDescription="@string/app_name"
                 android:scaleType="centerCrop"
                 android:src="@drawable/weatherbackground"
-                app:layout_constraintTop_toTopOf="parent"></ImageView>
+                app:layout_constraintTop_toTopOf="parent"/>
 
 
 
@@ -63,17 +63,33 @@
                 app:layout_constraintLeft_toRightOf="@id/tempTextView"
                 app:layout_constraintTop_toTopOf="@id/tempTextView" />
             <TextView
+                android:id="@+id/maxMinTextviewID"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/maxMinTextviewID"
                 android:textStyle="bold"
                 android:text="27\u2103 / 18\u2103    Sat"
                 app:layout_constraintTop_toBottomOf="@id/tempTextView"
                 app:layout_constraintLeft_toLeftOf="@id/tempTextView"/>
             <TextView
+                android:id="@+id/precipitationTextviewID"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="Precipitation: 60%"
+                app:layout_constraintTop_toBottomOf="@id/maxMinTextviewID"
+                app:layout_constraintLeft_toLeftOf="@id/tempTextView"/>
+            <TextView
+                android:id="@+id/precipitationTypeTextviewID"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="Type: Rain"
+                app:layout_constraintTop_toBottomOf="@id/precipitationTextviewID"
+                app:layout_constraintLeft_toLeftOf="@id/tempTextView"/>
+            <TextView
                 android:id="@+id/currentConditionTextViewID"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="Partly Cloudy"
                 android:textSize="30sp"
                 android:textColor="@color/black"
@@ -158,7 +174,7 @@
                         <TextView
                             android:id="@+id/recomandationTextviewID"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_height="130dp"
                             android:justificationMode="inter_word"
                             android:textColor="@color/black"
                             android:text="Your moisture and Temperature is Alright. And also there is Chance of Raining. So you don't need to watering your land  "
