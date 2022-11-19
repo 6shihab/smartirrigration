@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".WeatherActivity">
+
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNagivationView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/colorWhite"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:menu="@menu/bottom_navigation_menu"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/bottomNagivationView"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/imageHeader"
+                android:layout_width="match_parent"
+                android:layout_height="260dp"
+                android:contentDescription="@string/app_name"
+                android:scaleType="centerCrop"
+                android:src="@drawable/weatherbackground"
+                app:layout_constraintTop_toTopOf="parent"></ImageView>
+
+
+
+            <TextView
+                android:id="@+id/tempTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="25"
+                android:textSize="40pt"
+                android:textColor="@color/black"
+                app:layout_constraintTop_toBottomOf="@id/heading"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:layout_marginLeft="35dp"
+                android:layout_marginTop="20dp"
+                />
+
+
+            <TextView
+                android:id="@+id/temperatureUnitID"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="\u2103 "
+                android:textColor="@color/black"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toRightOf="@id/tempTextView"
+                app:layout_constraintTop_toTopOf="@id/tempTextView" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/maxMinTextviewID"
+                android:textStyle="bold"
+                android:text="27\u2103 / 18\u2103    Sat"
+                app:layout_constraintTop_toBottomOf="@id/tempTextView"
+                app:layout_constraintLeft_toLeftOf="@id/tempTextView"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/currentConditionTextViewID"
+                android:text="Partly Cloudy"
+                android:textSize="30sp"
+                android:textColor="@color/black"
+                app:layout_constraintTop_toTopOf="@id/tempTextView"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_marginRight="15dp"
+                />
+
+            <TextView
+                android:id="@+id/weatherDescriptionTextViewID"
+                android:layout_width="180dp"
+                android:layout_height="120dp"
+                android:layout_marginTop="15dp"
+                android:textColor="@color/black"
+                android:textSize="17dp"
+                android:justificationMode="none"
+                android:text="Similar temperature continuing with a chance of Rain Thursday, Friday &amp; Saturday"
+                app:layout_constraintRight_toRightOf="@id/currentConditionTextViewID"
+                app:layout_constraintStart_toStartOf="@+id/currentConditionTextViewID"
+                app:layout_constraintTop_toBottomOf="@id/currentConditionTextViewID" />
+            <TextView
+                android:id="@+id/heading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Weather "
+                android:textAlignment="center"
+                android:textSize="23sp"
+                style="@style/TextAppearance.AppCompat.Large"
+                tools:ignore="MissingConstraints"
+                tools:layout_editor_absoluteX="0dp"
+                tools:layout_editor_absoluteY="0dp"/>
+
+
+            <View
+                android:id="@+id/viewSupport"
+                android:layout_width="1dp"
+                android:layout_height="1dp"
+                app:layout_constraintBottom_toBottomOf="@id/imageHeader"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginBottom="50dp"/>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/viewSupport"
+                app:layout_constraintStart_toStartOf="parent"
+                app:cardBackgroundColor="@color/colorWhite"
+                android:layout_margin="30dp"
+                app:cardCornerRadius="10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="15dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="10dp"
+                        android:orientation="horizontal"
+                        android:gravity="center">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/black"
+                            android:text="Recomandation "
+                            android:textAlignment="center"
+                            android:textSize="20sp"
+                            android:textStyle="bold"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="10dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/recomandationTextviewID"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:justificationMode="inter_word"
+                            android:textColor="@color/black"
+                            android:text="Your moisture and Temperature is Alright. And also there is Chance of Raining. So you don't need to watering your land  "
+                            android:textSize="20sp"/>
+
+                    </LinearLayout>
+
+
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@id/card"
+                android:layout_marginTop="15dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="7-Day Weather Report"
+                    android:layout_marginLeft="15dp"
+                    android:textSize="20sp"/>
+                <TextView
+                    android:id="@+id/day0TextviewID"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Day-0 Weather Report"
+                    android:layout_marginLeft="15dp"
+                    android:textSize="19sp"/>
+                <TextView
+                    android:id="@+id/day1TextviewID"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Day-1 Weather Report"
+                    android:layout_marginLeft="15dp"
+                    android:textSize="19sp"/>
+                <TextView
+                    android:id="@+id/day2TextviewID"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Day-2 Weather Report"
+                    android:layout_marginLeft="15dp"
+                    android:textSize="19sp"/>
+                <TextView
+                    android:id="@+id/day3TextviewID"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Day-3 Weather Report"
+                    android:layout_marginLeft="15dp"
+                    android:textSize="19sp"/>
+                <TextView
+                    android:id="@+id/day4TextviewID"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Day-4 Weather Report"
+                    android:layout_marginLeft="15dp"
+                    android:textSize="19sp"/>
+                <TextView
+                    android:id="@+id/day5TextviewID"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Day-5 Weather Report"
+                    android:layout_marginLeft="15dp"
+                    android:textSize="19sp"/>
+                <TextView
+                    android:id="@+id/day6TextviewID"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Day-6 Weather Report"
+                    android:layout_marginLeft="15dp"
+                    android:textSize="19sp"/>
+
+            </LinearLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+

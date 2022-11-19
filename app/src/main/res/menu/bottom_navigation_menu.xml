@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+        <item
+            android:id="@+id/recieve"
+            android:enabled="true"
+            android:icon="@drawable/paperclip"
+            android:title="@string/receive"/>
+        <item
+            android:id="@+id/data"
+            android:enabled="true"
+            android:icon="@drawable/data"
+            android:title="@string/data"/>
+        <item
+            android:id="@+id/about"
+            android:enabled="true"
+            android:icon="@drawable/copyright"
+            android:title="@string/about"/>
+</menu>
