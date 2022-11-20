@@ -1,6 +1,8 @@
 package com.example.smartirrigation;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -41,6 +43,9 @@ public class WeatherActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
+
+
+
         tempTextview=findViewById(R.id.tempTextView);
         maxMinTextview=findViewById(R.id.maxMinTextviewID);
         precipitationTextview=findViewById(R.id.precipitationTextviewID);
@@ -48,7 +53,7 @@ public class WeatherActivity extends AppCompatActivity {
         currentConditionTextView=findViewById(R.id.currentConditionTextViewID);
         weatherDescriptionTextView=findViewById(R.id.weatherDescriptionTextViewID);
 
-
+        runSavedWeatherData();
 
         Bundle bundle = getIntent().getExtras();
         if(bundle != null){
@@ -103,7 +108,41 @@ public class WeatherActivity extends AppCompatActivity {
 
     }
 
+    private void runSavedWeatherData() {
+        SharedPreferences sharedPreferences1=getSharedPreferences("WeatherDetails", Context.MODE_PRIVATE);
+        if (sharedPreferences1.contains("temperature") && sharedPreferences1.contains("maxmintemperature")) {
+            tempTextview.setText(sharedPreferences1.getString("temperature", "25"));
+            maxMinTextview.setText(sharedPreferences1.getString("maxmintemperature", "wait"));
+            precipitationTextview.setText(sharedPreferences1.getString("precipitation", "wait"));
+            precipitationTypeTextview.setText(sharedPreferences1.getString("precipitationtype", "Wait"));
+            currentConditionTextView.setText(sharedPreferences1.getString("currentweathercondition", "wait"));
+            weatherDescriptionTextView.setText(sharedPreferences1.getString("weatherdescription", "wait"));
+
+            String[] all_data=new String[7];
+            for (int i=0;i<7;i++){
+                all_data[i]=sharedPreferences1.getString(String.valueOf(i),"wait");
+            }
+            TableLayout weathertableLayout = (TableLayout) findViewById(R.id.weatherdataTable);
+
+            for (String row : all_data) {
+                TableRow tableRow = new TableRow(WeatherActivity.this);
+                String[] parameters = row.split("-", 4);
+                for (int i=0; i<4; i++){
+                    TextView textView = new TextView(WeatherActivity.this);
+                    textView.setText(parameters[i]);
+                    textView.setTextSize(15);
+                    textView.setPadding(12,10,0, 10);
+                    textView.setGravity(Gravity.LEFT);
+                    tableRow.addView(textView);
+                }
+                weathertableLayout.addView(tableRow);
+            }
+
+        }
+    }
+
     public void callVisualCrossingWeatherAPI(){
+
         String lat;
         String lon;
         lat="24.0129";
@@ -118,23 +157,37 @@ public class WeatherActivity extends AppCompatActivity {
             public void onResponse(JSONObject response) {
                 try {
                     JSONArray jsonDays=response.getJSONArray("days");
+                    SharedPreferences sharedPreferences=getSharedPreferences("WeatherDetails", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor spEditor=sharedPreferences.edit();
+
                     String temperature=Integer.toString((int)Double.parseDouble(jsonDays.getJSONObject(0).getString("temp")));
+                    spEditor.putString("temperature",temperature);
                     tempTextview.setText(temperature);
                     maxMinStringBuilder.append(jsonDays.getJSONObject(0).getString("tempmax")+"\u2103");
                     maxMinStringBuilder.append(" / ");
                     maxMinStringBuilder.append(jsonDays.getJSONObject(0).getString("tempmin")+"\u2103");
                     String dayOfTheWeek = new SimpleDateFormat("EEE").format(new Date());
                     maxMinStringBuilder.append("  "+dayOfTheWeek);
+                    spEditor.putString("maxmintemperature",maxMinStringBuilder.toString());
                     maxMinTextview.setText(maxMinStringBuilder);
-                    precipitationTextview.setText("Precipitation: "+jsonDays.getJSONObject(0).getString("precipprob")+"%");
+                    String precipitation="Precipitation: "+jsonDays.getJSONObject(0).getString("precipprob")+"%";
+                    spEditor.putString("precipitation",precipitation);
+                    precipitationTextview.setText(precipitation);
                     if (jsonDays.getJSONObject(0).getString("preciptype")!="null"){
-                        precipitationTypeTextview.setText("Type: "+jsonDays.getJSONObject(0).getString("preciptype"));
+                        String precipitationtype="Type: "+jsonDays.getJSONObject(0).getString("preciptype");
+                        spEditor.putString("precipitationtype",precipitationtype);
+                        precipitationTypeTextview.setText(precipitationtype);
                     }
                     else {
+                        spEditor.putString("precipitationtype","Type: No Rain");
                         precipitationTypeTextview.setText("Type: No Rain");
                     }
-                    currentConditionTextView.setText(jsonDays.getJSONObject(0).getString("conditions"));
-                    weatherDescriptionTextView.setText(response.getString("description"));
+                    String currentweathercondition=jsonDays.getJSONObject(0).getString("conditions");
+                    currentConditionTextView.setText(currentweathercondition);
+                    spEditor.putString("currentweathercondition",currentweathercondition);
+                    String weatherdescription=response.getString("description");
+                    weatherDescriptionTextView.setText(weatherdescription);
+                    spEditor.putString("weatherdescription",weatherdescription);
                     SimpleDateFormat sdf = new SimpleDateFormat("MMM dd   EEE");
 
                     String[] all_data=new String[7];
@@ -142,25 +195,32 @@ public class WeatherActivity extends AppCompatActivity {
                         Calendar calendar = new GregorianCalendar();
                         calendar.add(Calendar.DATE, i);
                         all_data[i]=sdf.format(calendar.getTime())+"-"+jsonDays.getJSONObject(i)
-                                .getString("conditions")+"-"+jsonDays.getJSONObject(i)
-                                .getString("tempmax")+"\u2103"+"/"+jsonDays.getJSONObject(i)
-                                .getString("tempmin")+"\u2103";
+                                .getString("conditions")+"-"+(int)Double.parseDouble(jsonDays.getJSONObject(i)
+                                .getString("tempmax"))+"\u2103"+"/"+(int)Double.parseDouble(jsonDays.getJSONObject(i)
+                                .getString("tempmin"))+"\u2103"+"-"+jsonDays.getJSONObject(i)
+                                .getString("precipprob")+"%";
+                        spEditor.putString(String.valueOf(i),all_data[i]);
                     }
+
+                    spEditor.commit();
                     TableLayout weathertableLayout = (TableLayout) findViewById(R.id.weatherdataTable);
+                    weathertableLayout.removeAllViews();
 
                     for (String row : all_data) {
                         TableRow tableRow = new TableRow(WeatherActivity.this);
-                        String[] parameters = row.split("-", 3);
-                        for (int i=0; i<3; i++){
+                        String[] parameters = row.split("-", 4);
+                        for (int i=0; i<4; i++){
                             TextView textView = new TextView(WeatherActivity.this);
                             textView.setText(parameters[i]);
-                            textView.setTextSize(16);
-                            textView.setPadding(10,0,10, 0);
+                            textView.setTextSize(15);
+                            textView.setPadding(12,10,0, 10);
                             textView.setGravity(Gravity.LEFT);
                             tableRow.addView(textView);
                         }
                         weathertableLayout.addView(tableRow);
                     }
+
+
 
 
 
