@@ -35,6 +35,7 @@ public class WeatherActivity extends AppCompatActivity {
     public static final String DEGREE_SIGN="\u2103";
     public StringBuilder maxMinStringBuilder;
     TextView tempTextview,maxMinTextview,precipitationTextview,precipitationTypeTextview,currentConditionTextView,weatherDescriptionTextView;
+    TextView recomandationTextview;
     String moisture="0";
     String ph="0";
     String temperature="0";
@@ -52,6 +53,7 @@ public class WeatherActivity extends AppCompatActivity {
         precipitationTypeTextview=findViewById(R.id.precipitationTypeTextviewID);
         currentConditionTextView=findViewById(R.id.currentConditionTextViewID);
         weatherDescriptionTextView=findViewById(R.id.weatherDescriptionTextViewID);
+        recomandationTextview=findViewById(R.id.recomandationTextviewID);
 
         runSavedWeatherData();
 
@@ -160,7 +162,7 @@ public class WeatherActivity extends AppCompatActivity {
                     SharedPreferences sharedPreferences=getSharedPreferences("WeatherDetails", Context.MODE_PRIVATE);
                     SharedPreferences.Editor spEditor=sharedPreferences.edit();
 
-                    String temperature=Integer.toString((int)Double.parseDouble(jsonDays.getJSONObject(0).getString("temp")));
+                    String temperature=response.getJSONObject("currentConditions").getString("temp");
                     spEditor.putString("temperature",temperature);
                     tempTextview.setText(temperature);
                     maxMinStringBuilder.append(jsonDays.getJSONObject(0).getString("tempmax")+"\u2103");
@@ -182,7 +184,7 @@ public class WeatherActivity extends AppCompatActivity {
                         spEditor.putString("precipitationtype","Type: No Rain");
                         precipitationTypeTextview.setText("Type: No Rain");
                     }
-                    String currentweathercondition=jsonDays.getJSONObject(0).getString("conditions");
+                    String currentweathercondition=response.getJSONObject("currentConditions").getString("conditions");
                     currentConditionTextView.setText(currentweathercondition);
                     spEditor.putString("currentweathercondition",currentweathercondition);
                     String weatherdescription=response.getString("description");
@@ -220,8 +222,7 @@ public class WeatherActivity extends AppCompatActivity {
                         weathertableLayout.addView(tableRow);
                     }
 
-
-
+                    recomandation(jsonDays);
 
 
                 } catch (JSONException e) {
@@ -229,10 +230,33 @@ public class WeatherActivity extends AppCompatActivity {
                 }
 
             }
+
+            private void recomandation(JSONArray jsonDays) throws JSONException {
+
+
+                if (Integer.parseInt(moisture)>15 && Integer.parseInt(moisture)<25){
+                    Double day0precipitationProb=Double.parseDouble(jsonDays.getJSONObject(0).getString("precipprob"));
+                    Double day1precipitationProb=Double.parseDouble(jsonDays.getJSONObject(1).getString("precipprob"));
+                    Double day2precipitationProb=Double.parseDouble(jsonDays.getJSONObject(2).getString("precipprob"));
+                    if (day0precipitationProb>30.0 || day1precipitationProb >35.0 || day2precipitationProb>40){
+                        recomandationTextview.setText("Your Water Level is Low. But there is chance of raining within 2 days. Not need to watering Land.");
+                    } else {
+                        recomandationTextview.setText("Your Water Level is Low. There is no chance of raining withing 2 days. Watering your Land.");
+                    }
+                }
+                else if (Integer.parseInt(moisture)>0 && Integer.parseInt(moisture)<15){
+                    recomandationTextview.setText("Immediately Watering Your Land. Don't Wait for Rain. Currently, the water level is in danger. ");
+                }
+                else if (Integer.parseInt(moisture)>25){
+                    recomandationTextview.setText("Your moisture and Temperature is Alright. Do not Need To watering Your Land.");
+                }else {
+                    recomandationTextview.setText("Please Connect Soil Moisture Device. If Connected Please Wait a few seconds.");
+                }
+            }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(),"Error Occur",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),"Error Occur Reload",Toast.LENGTH_SHORT).show();
             }
         });
         queue.add(request);

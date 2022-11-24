@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Smart Agriculture</string>
+    <string name="app_name">Smart Irrigation</string>
     <string name="receive">Receive</string>
     <string name="data">Data</string>
     <string name="about">about</string>

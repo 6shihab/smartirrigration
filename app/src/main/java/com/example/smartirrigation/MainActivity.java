@@ -1,11 +1,18 @@
 package com.example.smartirrigation;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MenuItem;
@@ -17,6 +24,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
@@ -39,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
 
     private LocationRequest locationRequest;
     private static final int REQUEST_CHECK_SETTINGS = 10001;
+    private static final String CHANNEL_ID="NotificationChannel";
+    private static final int NOTIFICATION_ID=100;
 
     TextView myLabel;
     TextView moistureValue;
@@ -53,9 +63,9 @@ public class MainActivity extends AppCompatActivity {
     byte[] readBuffer;
     int readBufferPosition;
     volatile boolean stopWorker;
-    String moisture="10";
-    String ph="11";
-    String temperature="12";
+    String moisture="25";
+    String ph="5.7";
+    String temperature="8";
 
 
     @Override
@@ -65,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
         locationTurnedON();
 
+
         Button connect = (Button)findViewById(R.id.connect);
         Button saveButton = (Button)findViewById(R.id.save);
         Button weatherButton=(Button)findViewById(R.id.weatherButtonID);
@@ -72,7 +83,8 @@ public class MainActivity extends AppCompatActivity {
         moistureValue = (TextView)findViewById(R.id.tds);
         phValue = (TextView)findViewById(R.id.ph);
         temperatureValue = (TextView)findViewById(R.id.temperature);
-//        BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.bottomNagivationView);
+
+
 
         BottomNavigationView bottomNav = (BottomNavigationView)findViewById(R.id.bottomNagivationView);
         bottomNav.setSelectedItemId(R.id.recieve);
@@ -241,6 +253,9 @@ public class MainActivity extends AppCompatActivity {
                                     moisture=parameters[0];
                                     ph=parameters[1];
                                     temperature=parameters[2];
+                                    if (Integer.parseInt(moisture)>0 && Integer.parseInt(moisture)<25){
+                                        notificationSender();
+                                    }
 
                                     readBufferPosition = 0;
 
@@ -248,7 +263,7 @@ public class MainActivity extends AppCompatActivity {
                                     {
                                         public void run()
                                         {
-                                            moistureValue.setText(moisture);
+                                            moistureValue.setText(moisture+"%");
                                             phValue.setText(ph);
                                             temperatureValue.setText(temperature);
                                         }
@@ -332,6 +347,58 @@ public class MainActivity extends AppCompatActivity {
                     finish();
             }
         }
+    }
+    private void notificationSender() {
+
+        Drawable drawable= ResourcesCompat.getDrawable(getResources(),R.drawable.notificationicon,null);
+        BitmapDrawable bitmapDrawable=(BitmapDrawable) drawable;
+        Bitmap largeIcon=bitmapDrawable.getBitmap();
+        String title;
+        String message;
+
+        if (Integer.parseInt(moisture)>0 && Integer.parseInt(moisture)<15){
+            title="Danger Warning";
+            message="Your Water Level is Under Danger Level. Click for recommendation";
+        }else{
+            title="Yellow Warning";
+            message="Water level is below than Standard Level. Click for recommendation";
+        }
+
+
+
+
+        Intent intent = new Intent(MainActivity.this, WeatherActivity.class);
+        intent.putExtra("moisture", moisture);
+        intent.putExtra("ph", ph);
+        intent.putExtra("temperature", temperature);
+        overridePendingTransition(0,0);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent=PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_ONE_SHOT);
+
+
+        NotificationManager notificationManager= (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        Notification notification;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            notification= new Notification.Builder(this)
+                    .setLargeIcon(largeIcon)
+                    .setSmallIcon(R.drawable.notificationicon)
+                    .setContentTitle(title)
+                    .setContentText(message)
+                    .setSubText("New Message From App")
+                    .setContentIntent(pendingIntent)
+                    .setAutoCancel(true)
+                    .setChannelId(CHANNEL_ID)
+                    .build();
+            notificationManager.createNotificationChannel(new NotificationChannel(CHANNEL_ID,"New Channel",NotificationManager.IMPORTANCE_HIGH));
+        }else {
+            notification= new Notification.Builder(this)
+                    .setLargeIcon(largeIcon)
+                    .setSmallIcon(R.drawable.notificationicon)
+                    .setContentText("New Message")
+                    .setSubText("New Message From App")
+                    .build();
+        }
+        notificationManager.notify(NOTIFICATION_ID,notification);
     }
 
 

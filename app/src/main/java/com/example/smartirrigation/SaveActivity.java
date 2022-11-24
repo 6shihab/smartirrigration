@@ -20,11 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -32,6 +28,12 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 
 public class SaveActivity extends AppCompatActivity {
@@ -41,6 +43,8 @@ public class SaveActivity extends AppCompatActivity {
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
 
     private FusedLocationProviderClient mFusedLocationClient;
+
+    DatabaseReference databaseReference;
 
     /**
      * Represents a geographical location.
@@ -68,6 +72,8 @@ public class SaveActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_save);
+
+        databaseReference= FirebaseDatabase.getInstance().getReference("SoilParameter/");
 
 
         myLabel = (TextView)findViewById(R.id.info);
@@ -129,7 +135,7 @@ public class SaveActivity extends AppCompatActivity {
             moisture = bundle.getString("moisture");
             ph = bundle.getString("ph");
             temperature = bundle.getString("temperature");
-            moistureValue.setText(moisture);
+            moistureValue.setText(moisture+"%");
             phValue.setText(ph);
             temperatureValue.setText(temperature);
         }
@@ -152,30 +158,33 @@ public class SaveActivity extends AppCompatActivity {
         {
             public void onClick(View v)
             {
-                try{
-                    String url ="#";
-                    String requestParameter = url + "?latitude="+latitudeValue.getText().toString()+ "&longitude="+longitudeValue.getText().toString() +"&moisture=" + moisture+"&ph=" + ph+"&temperature=" + temperature;
-                    dbHelper.insertData(moisture, ph, temperature,latitudeValue.getText().toString(),longitudeValue.getText().toString());
-                    Toast.makeText(SaveActivity.this, "Data Added", Toast.LENGTH_SHORT).show();
-                    StringRequest stringRequest = new StringRequest(Request.Method.GET, requestParameter,
-                            new Response.Listener<String>() {
-                                @Override
-                                public void onResponse(String response) {
-                                    info.setText(response.toString());
-                                }
-                            }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            info.setText("Something wrong to add data in web server");
-                        }
-                    });
-                    queue.add(stringRequest);
-                }catch (Exception e ){
-                    Toast.makeText(SaveActivity.this, "Data don't Add", Toast.LENGTH_SHORT).show();
+                if (Integer.parseInt(moisture)==0 && Integer.parseInt(ph)==0 && Integer.parseInt(temperature)==0){
+                    Toast.makeText(getApplicationContext(),"Please Connect Soil Testing Device",Toast.LENGTH_SHORT).show();
+                    info.setText("Something wrong to add Data");
+
+                }else {
+                    try{
+                        dbHelper.insertData(moisture, ph, temperature,latitudeValue.getText().toString(),longitudeValue.getText().toString());
+                        Toast.makeText(SaveActivity.this, "Data Added", Toast.LENGTH_SHORT).show();
+                        saveData();
+                    }catch (Exception e ){
+                        Toast.makeText(SaveActivity.this, "Data don't Add", Toast.LENGTH_SHORT).show();
+                        info.setText("Something Wrong, check internet connection. Data do not added on Firebase Webserver");
+                    }
                 }
+
             }
         });
 
+
+    }
+    private void saveData() {
+        String id=databaseReference.push().getKey();
+        String currentDate = new SimpleDateFormat("dd MMM yy", Locale.getDefault()).format(new Date());
+        String currentTime = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+        SoilParameter soilParameter=new SoilParameter(id,currentDate,currentTime,moisture,ph,temperature,latitudeValue.getText().toString().trim(),longitudeValue.getText().toString().trim());
+        databaseReference.child(id).setValue(soilParameter);
+        info.setText("Data Added on Firebase Webserver");
 
     }
 

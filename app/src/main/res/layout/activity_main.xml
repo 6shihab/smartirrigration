@@ -33,8 +33,7 @@
             android:src="@drawable/banner"
             android:scaleType="centerCrop"
             android:contentDescription="@string/app_name"
-            app:layout_constraintTop_toTopOf="parent"></ImageView>
-
+            app:layout_constraintTop_toTopOf="parent"/>
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -46,7 +45,7 @@
             android:id="@+id/heading"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Smart Agriculture System"
+            android:text="Smart Irrigation System"
             android:textAlignment="center"
             android:textColor="@color/colorWhite"
             android:textSize="23sp"
