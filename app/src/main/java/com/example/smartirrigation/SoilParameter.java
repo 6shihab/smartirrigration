@@ -8,14 +8,14 @@ public class SoilParameter {
     private String ph;
     private String temperature;
     private String latitude;
-    private String longitue;
+    private String longitude;
 
     public SoilParameter(){
 
     }
 
 
-    public SoilParameter(String id, String currentDate, String currentTime, String moisture, String ph, String temperature, String latitude, String longitue) {
+    public SoilParameter(String id, String currentDate, String currentTime, String moisture, String ph, String temperature, String latitude, String longitude) {
         this.id = id;
         this.currentDate = currentDate;
         this.currentTime = currentTime;
@@ -23,7 +23,7 @@ public class SoilParameter {
         this.ph = ph;
         this.temperature = temperature;
         this.latitude = latitude;
-        this.longitue = longitue;
+        this.longitude = longitude;
     }
 
     public String getId() {
@@ -82,11 +82,11 @@ public class SoilParameter {
         this.latitude = latitude;
     }
 
-    public String getLongitue() {
-        return longitue;
+    public String getLongitude() {
+        return longitude;
     }
 
-    public void setLongitue(String longitue) {
-        this.longitue = longitue;
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
     }
 }
